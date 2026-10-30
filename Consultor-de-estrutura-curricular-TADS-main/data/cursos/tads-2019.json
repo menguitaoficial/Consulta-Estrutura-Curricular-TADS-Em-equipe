@@ -1,0 +1,51 @@
+{
+  "codigo": "TADS-2019",
+  "nome": "Tecnologia em Análise e Desenvolvimento de Sistemas",
+  "instituicao": "UFRN",
+  "ano": 2019,
+  "fonte": "https://sigaa.ufrn.br/sigaa/downloadArquivoPublico?idProducao=6317915&key=300ba6bebacf53bae709c86d9662d6b9",
+  "componentes": [
+    {"codigo": "TAD0001", "nome": "Fundamentos da Computação", "periodo": 1, "creditos": 4, "tipo": "obrigatoria", "prerequisitos": []},
+    {"codigo": "TAD0102", "nome": "Algoritmos e Programação", "periodo": 1, "creditos": 6, "tipo": "obrigatoria", "prerequisitos": []},
+    {"codigo": "TAD0201", "nome": "Raciocínio Lógico", "periodo": 1, "creditos": 3, "tipo": "obrigatoria", "prerequisitos": []},
+    {"codigo": "TAD0105", "nome": "Matemática Aplicada I", "periodo": 1, "creditos": 4, "tipo": "obrigatoria", "prerequisitos": []},
+    {"codigo": "TAD0006", "nome": "Sistemas Operacionais", "periodo": 1, "creditos": 4, "tipo": "obrigatoria", "prerequisitos": []},
+    {"codigo": "TAD0202", "nome": "Leitura e Produção de Textos", "periodo": 1, "creditos": 4, "tipo": "obrigatoria", "prerequisitos": []},
+
+    {"codigo": "TAD0012", "nome": "Processo de Desenvolvimento de Software", "periodo": 2, "creditos": 3, "tipo": "obrigatoria", "prerequisitos": []},
+    {"codigo": "TAD0009", "nome": "Programação Orientada a Objetos", "periodo": 2, "creditos": 4, "tipo": "obrigatoria", "prerequisitos": [["TAD0102"]]},
+    {"codigo": "TAD0103", "nome": "Banco de Dados", "periodo": 2, "creditos": 4, "tipo": "obrigatoria", "prerequisitos": []},
+    {"codigo": "TAD0013", "nome": "Matemática Aplicada II", "periodo": 2, "creditos": 4, "tipo": "obrigatoria", "prerequisitos": [["TAD0105"]]},
+    {"codigo": "TAD0111", "nome": "Programação Visual e Autoria Web", "periodo": 2, "creditos": 4, "tipo": "obrigatoria", "prerequisitos": []},
+    {"codigo": "TAD0114", "nome": "Redes de Computadores", "periodo": 2, "creditos": 4, "tipo": "obrigatoria", "prerequisitos": []},
+    {"codigo": "TAD0016", "nome": "Vertentes Produtivas nas Ciências Agrárias", "periodo": 2, "creditos": 3, "tipo": "obrigatoria", "prerequisitos": []},
+
+    {"codigo": "TAD0025", "nome": "Inteligência Computacional", "periodo": 3, "creditos": 4, "tipo": "obrigatoria", "prerequisitos": [["TAD0102"]]},
+    {"codigo": "TAD0019", "nome": "Programação Web", "periodo": 3, "creditos": 4, "tipo": "obrigatoria", "prerequisitos": [["TAD0009"]]},
+    {"codigo": "TAD0020", "nome": "Estruturas de Dados", "periodo": 3, "creditos": 4, "tipo": "obrigatoria", "prerequisitos": [["TAD0102"]]},
+    {"codigo": "TAD0123", "nome": "Sistemas Digitais", "periodo": 3, "creditos": 3, "tipo": "obrigatoria", "prerequisitos": []},
+    {"codigo": "TAD0022", "nome": "Estatística Aplicada", "periodo": 3, "creditos": 3, "tipo": "obrigatoria", "prerequisitos": []},
+    {"codigo": "TAD0004", "nome": "Análise e Projeto Orientado a Objetos", "periodo": 3, "creditos": 3, "tipo": "obrigatoria", "prerequisitos": []},
+    {"codigo": "TAD0203", "nome": "Gestão de Qualidade de Software", "periodo": 3, "creditos": 3, "tipo": "obrigatoria", "prerequisitos": []},
+
+    {"codigo": "TAD0018", "nome": "Processamento Digital de Imagens", "periodo": 4, "creditos": 4, "tipo": "obrigatoria", "prerequisitos": [["TAD0102"]]},
+    {"codigo": "TAD0027", "nome": "Programação para Dispositivos Móveis", "periodo": 4, "creditos": 6, "tipo": "obrigatoria", "prerequisitos": [["TAD0009"]]},
+    {"codigo": "TAD0028", "nome": "Planejamento e Gerência de Projetos", "periodo": 4, "creditos": 3, "tipo": "obrigatoria", "prerequisitos": [["TAD0009"]]},
+    {"codigo": "TAD0029", "nome": "Arquitetura de Software", "periodo": 4, "creditos": 3, "tipo": "obrigatoria", "prerequisitos": [["TAD0103", "TAD0111"]]},
+    {"codigo": "TAD0030", "nome": "Microcontroladores", "periodo": 4, "creditos": 4, "tipo": "obrigatoria", "prerequisitos": []},
+    {"codigo": "TAD0032", "nome": "Metodologia do Trabalho Científico", "periodo": 4, "creditos": 2, "tipo": "obrigatoria", "prerequisitos": []},
+    {"codigo": "TAD0204", "nome": "Fundamentos e Técnicas em Ciências de Dados", "periodo": 4, "creditos": 4, "tipo": "obrigatoria", "prerequisitos": [["TAD0102"], ["TAD0022"]]},
+
+    {"codigo": "TAD0108", "nome": "Contexto Geográfico Regional", "periodo": 5, "creditos": 2, "tipo": "obrigatoria", "prerequisitos": []},
+    {"codigo": "TAD0205", "nome": "Trabalho de Conclusão de Curso I", "periodo": 5, "creditos": 2, "tipo": "obrigatoria", "prerequisitos": []},
+    {"codigo": "TAD0015", "nome": "Empreendedorismo", "periodo": 5, "creditos": 3, "tipo": "obrigatoria", "prerequisitos": []},
+    {"codigo": "TAD0156", "nome": "Projetos Aplicados I", "periodo": 5, "creditos": 4, "tipo": "obrigatoria", "prerequisitos": [["TAD0102"], ["TAD0012"], ["TAD0103"]]},
+    {"codigo": "TAD0160", "nome": "Sistemas Distribuídos", "periodo": 5, "creditos": 2, "tipo": "obrigatoria", "prerequisitos": [["TAD0114"]]},
+
+    {"codigo": "TAD0140", "nome": "Trabalho de Conclusão de Curso II", "periodo": 6, "creditos": 4, "tipo": "obrigatoria", "prerequisitos": []},
+    {"codigo": "TAD0157", "nome": "Projetos Aplicados II", "periodo": 6, "creditos": 4, "tipo": "obrigatoria", "prerequisitos": [["TAD0156"], ["TAD0028"]]},
+    {"codigo": "TAD0035", "nome": "Legislação e Ética em TI", "periodo": 6, "creditos": 2, "tipo": "obrigatoria", "prerequisitos": []},
+    {"codigo": "OPTATIVAS", "nome": "Optativas", "periodo": null, "creditos": 16, "tipo": "optativa", "prerequisitos": []},
+    {"codigo": "ATIV-COMPL", "nome": "Atividades Complementares", "periodo": null, "creditos": null, "horas": 180, "tipo": "atividade", "prerequisitos": []}
+  ]
+}

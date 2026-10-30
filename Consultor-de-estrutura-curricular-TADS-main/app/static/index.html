@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Consulta Estrutura Curricular</title>
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --fg:#1d2330; --mut:#667085; --line:#e3e6ec; --acc:#2b5fd9;
+          --pg:#336791; --mongo:#13aa52; --neo:#018bff; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#12151c; --card:#1b2029; --fg:#e6e9ef; --mut:#98a2b3; --line:#2b3240; --acc:#6c93f0; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.45 system-ui, sans-serif; }
+  main { max-width:1280px; margin:0 auto; padding:24px 16px 48px; }
+  h1 { font-size:22px; margin:0 0 4px; }
+  .sub { color:var(--mut); margin:0 0 20px; }
+  form { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px;
+         display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:12px; align-items:end; }
+  label { display:flex; flex-direction:column; gap:4px; font-size:13px; color:var(--mut); }
+  input, select, button { font:inherit; padding:8px 10px; border-radius:7px; border:1px solid var(--line);
+                          background:var(--bg); color:var(--fg); }
+  button { background:var(--acc); color:#fff; border-color:var(--acc); cursor:pointer; font-weight:600; }
+  button:disabled { opacity:.6; cursor:wait; }
+  .hidden { display:none; }
+  #resumo { margin:18px 0 0; display:flex; gap:10px; flex-wrap:wrap; }
+  .tempo { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 14px; min-width:170px; }
+  .tempo b { display:block; font-size:20px; }
+  .tempo small { color:var(--mut); }
+  #saida { display:grid; grid-template-columns:repeat(auto-fit, minmax(380px, 1fr)); gap:16px; margin-top:16px; }
+  .painel { background:var(--card); border:1px solid var(--line); border-radius:10px; overflow:hidden; min-width:0; }
+  .painel header { padding:10px 14px; color:#fff; font-weight:600; display:flex; justify-content:space-between; }
+  .painel .corpo { padding:12px 14px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th, td { text-align:left; padding:5px 6px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--mut); font-weight:600; }
+  details { margin-top:10px; }
+  summary { cursor:pointer; color:var(--mut); font-size:13px; }
+  pre { background:var(--bg); border:1px solid var(--line); border-radius:7px; padding:10px; overflow:auto;
+        font-size:12px; margin:6px 0 0; }
+  .erro { color:#c0392b; }
+  .vazio { color:var(--mut); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Consulta Estrutura Curricular</h1>
+  <p class="sub">A mesma consulta executada em PostgreSQL (relacional), MongoDB (documentos) e Neo4j (grafo).</p>
+
+  <form id="form">
+    <label>Curso <select id="curso"></select></label>
+    <label>Banco
+      <select id="db">
+        <option value="todos">Todos (comparar)</option>
+        <option value="postgres">PostgreSQL</option>
+        <option value="mongo">MongoDB</option>
+        <option value="neo4j">Neo4j</option>
+      </select>
+    </label>
+    <label>Consulta
+      <select id="op">
+        <option value="buscar">Buscar componentes</option>
+        <option value="prereq_diretos">Pré-requisitos diretos de…</option>
+        <option value="prereq_transitivos">Pré-requisitos (cadeia completa) de…</option>
+        <option value="dependentes_diretos">O que depende diretamente de…</option>
+        <option value="dependentes_transitivos">O que depende (cadeia completa) de…</option>
+      </select>
+    </label>
+    <label class="so-buscar">Nome contém <input id="nome" placeholder="ex.: programação"></label>
+    <label>Código <input id="codigo" placeholder="ex.: TAD0102"></label>
+    <label class="so-buscar">Período
+      <select id="periodo"><option value="">todos</option>
+        <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+      </select>
+    </label>
+    <label class="so-buscar">Tipo
+      <select id="tipo"><option value="">todos</option>
+        <option value="obrigatoria">obrigatória</option><option value="optativa">optativa</option>
+        <option value="atividade">atividade</option>
+      </select>
+    </label>
+    <label class="so-buscar">Tem como pré-requisito <input id="requer" placeholder="ex.: TAD0102"></label>
+    <label>Execuções (média) <input id="execucoes" type="number" min="1" max="100" value="10"></label>
+    <button id="ir" type="submit">Consultar</button>
+  </form>
+
+  <div id="resumo"></div>
+  <div id="saida"></div>
+</main>
+
+<script>
+const NOMES = { postgres: "PostgreSQL", mongo: "MongoDB", neo4j: "Neo4j" };
+const CORES = { postgres: "var(--pg)", mongo: "var(--mongo)", neo4j: "var(--neo)" };
+const $ = id => document.getElementById(id);
+
+function el(tag, props = {}, ...filhos) {
+  const e = Object.assign(document.createElement(tag), props);
+  filhos.forEach(f => e.append(f));
+  return e;
+}
+
+function formatarPrereq(grupos) {
+  if (!grupos.length) return "—";
+  return grupos.map(g => g.join(" OU ")).join(" E ");
+}
+
+function atualizarCampos() {
+  const buscar = $("op").value === "buscar";
+  document.querySelectorAll(".so-buscar").forEach(e => e.classList.toggle("hidden", !buscar));
+}
+
+async function carregarCursos() {
+  for (const db of ["postgres", "mongo", "neo4j"]) {
+    try {
+      const r = await fetch(`/api/cursos?db=${db}`);
+      if (!r.ok) continue;
+      const cursos = await r.json();
+      cursos.forEach(c => $("curso").append(el("option", { value: c.codigo, textContent: `${c.codigo} — ${c.nome}` })));
+      return;
+    } catch (_) { /* tenta o próximo banco */ }
+  }
+  $("saida").append(el("p", { className: "erro", textContent: "Nenhum banco respondeu. Rode docker compose up -d e python -m app.loader." }));
+}
+
+function params(db) {
+  const p = new URLSearchParams({ db, curso: $("curso").value, op: $("op").value, execucoes: $("execucoes").value });
+  for (const k of ["nome", "codigo", "periodo", "tipo", "requer"]) {
+    if ($("op").value !== "buscar" && k !== "codigo") continue;
+    if ($(k).value) p.set(k, $(k).value);
+  }
+  return p;
+}
+
+async function consultar(db) {
+  const r = await fetch("/api/consulta?" + params(db));
+  const corpo = await r.json();
+  if (!r.ok) throw new Error(corpo.detail || r.statusText);
+  return corpo;
+}
+
+function painel(db, dados, erro) {
+  const topo = el("header", {}, el("span", { textContent: NOMES[db] }),
+    el("span", { textContent: erro ? "erro" : `${dados.tempo.medio_ms.toFixed(2)} ms` }));
+  topo.style.background = CORES[db];
+  const corpo = el("div", { className: "corpo" });
+  if (erro) {
+    corpo.append(el("div", { className: "erro", textContent: erro }));
+  } else if (!dados.total) {
+    corpo.append(el("div", { className: "vazio", textContent: "Nenhum resultado." }));
+  } else {
+    const t = el("table");
+    t.append(el("tr", {}, ...["Código", "Componente", "Per.", "Créd.", "Pré-requisitos"].map(h => el("th", { textContent: h }))));
+    for (const r of dados.resultados) {
+      const carga = r.creditos ?? (r.horas ? r.horas + "h" : "");
+      t.append(el("tr", {}, el("td", { textContent: r.codigo }), el("td", { textContent: r.nome }),
+        el("td", { textContent: r.periodo ?? "" }), el("td", { textContent: carga }),
+        el("td", { textContent: formatarPrereq(r.prerequisitos) })));
+    }
+    corpo.append(el("div", { className: "vazio", textContent: `${dados.total} resultado(s)` }), t);
+  }
+  if (dados) {
+    corpo.append(el("details", {}, el("summary", { textContent: "Consulta executada" }), el("pre", { textContent: dados.consulta })));
+  }
+  return el("section", { className: "painel" }, topo, corpo);
+}
+
+function cartaoTempo(db, dados, erro) {
+  const c = el("div", { className: "tempo" }, el("small", { textContent: NOMES[db] }));
+  if (erro) { c.append(el("b", { textContent: "erro" })); return c; }
+  const t = dados.tempo;
+  c.append(el("b", { textContent: `${t.medio_ms.toFixed(2)} ms` }),
+    el("small", { textContent: `mín ${t.min_ms.toFixed(2)} · máx ${t.max_ms.toFixed(2)} · ${t.execucoes} execuções` }));
+  return c;
+}
+
+$("op").addEventListener("change", atualizarCampos);
+$("form").addEventListener("submit", async ev => {
+  ev.preventDefault();
+  $("ir").disabled = true;
+  $("saida").replaceChildren();
+  $("resumo").replaceChildren();
+  const bancos = $("db").value === "todos" ? ["postgres", "mongo", "neo4j"] : [$("db").value];
+  // sequencial: consultas simultâneas distorceriam os tempos
+  for (const db of bancos) {
+    let dados = null, erro = null;
+    try { dados = await consultar(db); } catch (e) { erro = e.message; }
+    $("resumo").append(cartaoTempo(db, dados, erro));
+    $("saida").append(painel(db, dados, erro));
+  }
+  $("ir").disabled = false;
+});
+
+atualizarCampos();
+carregarCursos();
+</script>
+</body>
+</html>
